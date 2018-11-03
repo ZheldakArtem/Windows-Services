@@ -20,7 +20,8 @@ namespace FileProcessingService
 			var currentDir = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 			var inDir = Path.Combine(currentDir, "in");
 			var outDir = Path.Combine(currentDir, "out");
-			var wrongOutDir = Path.Combine(currentDir, "wrongOutDir");
+			var wrongFileNamingOutDir = Path.Combine(currentDir, "wrongFileNamingOut");
+			var invalidSequence = Path.Combine(currentDir, "invalidSequence");
 
 			var config = new LoggingConfiguration();
 			var fileTarget = new FileTarget()
@@ -37,15 +38,19 @@ namespace FileProcessingService
 			var logFactory = new LogFactory(config);
 
 			HostFactory.Run(
-				conf => conf.Service<FileService>(
-					s => {
-						s.ConstructUsing(() => new FileService(inDir, outDir, wrongOutDir));
-						s.WhenStarted(serv => serv.Start());
-						s.WhenStopped(serv => serv.Stop());
-					}).UseNLog(logFactory));
-
-
-
+				conf => {
+					conf.Service<FileService>(
+					   s =>
+					   {
+						   s.ConstructUsing(() => new FileService(inDir, outDir, wrongFileNamingOutDir, invalidSequence));
+						   s.WhenStarted(serv => serv.Start());
+						   s.WhenStopped(serv => serv.Stop());
+					   }).UseNLog(logFactory);
+					conf.SetServiceName("FileProcessingService");
+					conf.SetDisplayName("File Processing Service");
+					conf.StartAutomaticallyDelayed();
+					conf.RunAsLocalSystem();
+				});
 		}
 	}
 }
