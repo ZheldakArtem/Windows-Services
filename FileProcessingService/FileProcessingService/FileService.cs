@@ -22,6 +22,41 @@ namespace FileProcessingService
 		private PdfCreatorr _pdfCreator;
 
 
+		public void Start()
+		{
+			_workThread.Start();
+			_watcher.EnableRaisingEvents = true;
+		}
+
+		public void Stop()
+		{
+			_watcher.EnableRaisingEvents = false;
+			_stopWork.Set();
+			_workThread.Join();
+
+		}
+
+		public bool TryOpen(string fileNmae, int numberOfAttempt)
+		{
+			for (int i = 0; i < numberOfAttempt; i++)
+			{
+				try
+				{
+					FileStream file = File.Open(fileNmae, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+
+					file.Close();
+
+					return true;
+				}
+				catch (IOException)
+				{
+					Thread.Sleep(2000);
+				}
+			}
+
+			return false;
+		}
+
 		public FileService(string inDir, string outDir, string outWrongFileNamingDir, string invalidFileSequenceDir)
 		{
 			this._inDir = inDir;
@@ -163,41 +198,6 @@ namespace FileProcessingService
 		private void Watcher_Created(object sender, FileSystemEventArgs e)
 		{
 			_newFileEvent.Set();
-		}
-
-		public void Start()
-		{
-			_workThread.Start();
-			_watcher.EnableRaisingEvents = true;
-		}
-
-		public void Stop()
-		{
-			_watcher.EnableRaisingEvents = false;
-			_stopWork.Set();
-			_workThread.Join();
-
-		}
-
-		public bool TryOpen(string fileNmae, int numberOfAttempt)
-		{
-			for (int i = 0; i < numberOfAttempt; i++)
-			{
-				try
-				{
-					FileStream file = File.Open(fileNmae, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
-
-					file.Close();
-
-					return true;
-				}
-				catch (IOException)
-				{
-					Thread.Sleep(2000);
-				}
-			}
-
-			return false;
 		}
 	}
 }

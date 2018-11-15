@@ -18,6 +18,7 @@ namespace FileProcessingService
 		private Document _document;
 		private PdfDocumentRenderer _renderer;
 		private IList<string> _filePathCollection = new List<string>();
+
 		public string CurrentBarcodeFilePath { get; private set; }
 
 		public event EventHandler CallbackWhenReadyToSave;
