@@ -1,13 +1,14 @@
 # Windows-Services
 
 Документы сохранял в pdf формате.
-Разделял поток картинок по штрих-коду(barcode). т.е. есть последовательность файлов img_1.png, img_2.png... в каком-то из них есть barcode. 
-В папке Image
+Разделял поток картинок по штрих-коду(barcode). т.е. есть последовательность файлов image_1.png, image_2.png... в каком-то из них есть barcode. 
 
-Project Title
-One Paragraph of project description goes here
+# В папке Image картинки image_3.png, image_15.png и image_21.png содержат barcode.
 
-Getting Started
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+# Служба реализована на базе Topshelf фреймворка
+чтобы зарегестрировать службу нужно запустить в командной строке FileProcessingService.exe install --sudo
+и чтобы деинсталировать FileProcessingService.exe uninstall --sudo
 
-Prerequisites
+Если файл имеет неверный формат, то вся последовательность перемещается в отдельную папку.
+При завершении службы, приложение закроется, завершив свою работу корректно, это достигается при помощи Join (FileService.cs line 181).
+
