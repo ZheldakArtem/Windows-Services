@@ -74,7 +74,6 @@ namespace FileProcessingService
 			{
 				File.Delete(_pdfCreator.CurrentBarcodeFilePath);
 			}
-
 			_pdfCreator.Reset();
 		}
 
@@ -103,7 +102,6 @@ namespace FileProcessingService
 
 			List<string> fileNameValidList;
 			List<string> sortedFileList;
-			int counter = 0;
 			do
 			{
 				fileNameValidList = CatchWrongFiles(_inDir, _outWrongFileNamingDir);
@@ -112,7 +110,6 @@ namespace FileProcessingService
 
 				foreach (var file in sortedFileList)
 				{
-					counter++;
 					if (_stopWork.WaitOne(TimeSpan.Zero))
 					{
 						return;
@@ -126,7 +123,7 @@ namespace FileProcessingService
 					}
 				}
 
-			} while (WaitHandle.WaitAny(new WaitHandle[] { _stopWork, _newFileEvent }, 1000) != 0);
+			} while (WaitHandle.WaitAny(new WaitHandle[] { _stopWork, _newFileEvent }, 5000) != 0);
 
 		}
 

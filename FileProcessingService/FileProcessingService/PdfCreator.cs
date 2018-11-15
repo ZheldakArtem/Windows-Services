@@ -47,6 +47,10 @@ namespace FileProcessingService
 
 		public void PushFile(string fullFileName)
 		{
+			if (_filePathCollection.Any(p => p == fullFileName))
+			{
+				return;
+			}
 
 			if (!HasBarcode(fullFileName))
 			{
